@@ -1,12 +1,13 @@
-package com.example.demo.rest;
+package com.example.firstcommit.controller;
 
-import com.example.demo.domain.User;
-import com.example.demo.repository.UserRepository;
-import com.example.demo.security.jwt.JwtTokenUtil;
-import com.example.demo.security.payload.JwtResponse;
-import com.example.demo.security.payload.LoginRequest;
-import com.example.demo.security.payload.MessageResponse;
-import com.example.demo.security.payload.RegisterRequest;
+
+import com.example.firstcommit.entities.User;
+import com.example.firstcommit.repository.UserRepository;
+import com.example.firstcommit.security.jwt.JwtTokenUtil;
+import com.example.firstcommit.security.payload.JwtResponse;
+import com.example.firstcommit.security.payload.LoginRequest;
+import com.example.firstcommit.security.payload.MessageResponse;
+import com.example.firstcommit.security.payload.RegisterRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,19 +15,19 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Controlador para llevar a cabo la autenticación utilizando JWT
- *
+ * <p>
  * Se utiliza AuthenticationManager para autenticar las credenciales que son el
  * usuario y password que llegan por POST en el cuerpo de la petición
- *
+ * <p>
  * Si las credenciales son válidas se genera un token JWT como respuesta
  */
-// @CrossOrigin(origins = "http://localhost:8081")
 @RestController
-@RequestMapping("/api/auth")
 public class AuthController {
 
     private final AuthenticationManager authManager;
@@ -35,30 +36,30 @@ public class AuthController {
     private final JwtTokenUtil jwtTokenUtil;
 
     public AuthController(AuthenticationManager authManager,
-            UserRepository userRepository,
-            PasswordEncoder encoder,
-            JwtTokenUtil jwtTokenUtil){
+                          UserRepository userRepository,
+                          PasswordEncoder encoder,
+                          JwtTokenUtil jwtTokenUtil) {
         this.authManager = authManager;
         this.userRepository = userRepository;
         this.encoder = encoder;
         this.jwtTokenUtil = jwtTokenUtil;
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<JwtResponse> login(@RequestBody LoginRequest loginRequest){
+    @PostMapping("/auth/login")
+    public ResponseEntity<JwtResponse> login(@RequestBody LoginRequest loginRequest) {
 
         Authentication authentication = authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtTokenUtil.generateJwtToken(authentication);
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        User userDB = userRepository.findByUsername(userDetails.getUsername()).get();
 
-        // UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-
-        return ResponseEntity.ok(new JwtResponse(jwt));
+        return ResponseEntity.ok(new JwtResponse(jwt, userDB));
     }
 
-    @PostMapping("/register")
+    @PostMapping("/auth/register")
     public ResponseEntity<MessageResponse> register(@RequestBody RegisterRequest signUpRequest) {
 
         // Check 1: username
@@ -84,4 +85,5 @@ public class AuthController {
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
+
 }

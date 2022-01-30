@@ -1,9 +1,11 @@
 package com.example.firstcommit.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -15,23 +17,33 @@ public class User implements Serializable {
     @Column(unique = true, nullable = false)
     private String username;
 
-    private String name;
-
+    @Column(unique = true, nullable = false)
     private String email;
 
+    @Column(nullable = false)
+    @JsonIgnore
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "users_candidates", joinColumns = @JoinColumn(name = "users_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "candidate_id", referencedColumnName = "id"))
-    private List<Candidate> candidates = new ArrayList<>();
+    // Relaciones
+    @OneToMany(mappedBy = "user")
+    private Set<Candidate> candidates = new HashSet<>();
 
-    public User(){}
+    public User() {
+    }
 
-    public User(Long id, String username, String name,String email, String password) {
+    public User(Long id) {
+        this.id = id;
+    }
+
+    public User(Long id, String username, String email, String password) {
         this.id = id;
         this.username = username;
-        this.name = name;
+        this.email = email;
+        this.password = password;
+    }
+
+    public User(String username, String email, String password) {
+        this.username = username;
         this.email = email;
         this.password = password;
     }
@@ -52,14 +64,6 @@ public class User implements Serializable {
         this.username = username;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -76,11 +80,11 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public List<Candidate> getCandidates() {
+    public Set<Candidate> getCandidates() {
         return candidates;
     }
 
-    public void setCandidates(List<Candidate> candidates) {
+    public void setCandidates(Set<Candidate> candidates) {
         this.candidates = candidates;
     }
 }

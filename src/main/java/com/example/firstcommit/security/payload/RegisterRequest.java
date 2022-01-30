@@ -1,4 +1,4 @@
-package com.example.demo.security.payload;
+package com.example.firstcommit.security.payload;
 
 public class RegisterRequest {
 

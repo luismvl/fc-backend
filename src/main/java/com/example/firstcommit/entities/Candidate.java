@@ -5,8 +5,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "candidates")
@@ -22,31 +23,35 @@ public class Candidate implements Serializable {
     @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(unique = true)
     private String phone;
 
     private String country;
 
     private String city;
 
-    private boolean relocation;
+    private Boolean relocation;
 
     @Enumerated(EnumType.STRING)
     private Modality modality;
 
     private String cv_url;
 
-//    Relaciones
+    //    Relaciones
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "candidates_tags", joinColumns = @JoinColumn(name = "candidate_id", referencedColumnName = "id"),
-    inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"))
-    private List<Tag> tags = new ArrayList<>();
+    @JoinTable(
+            name = "candidates_tags",
+            joinColumns = @JoinColumn(name = "candidate_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id")
+    )
+    private Set<Tag> tags = new HashSet<>();
 
-    @ManyToMany(mappedBy = "candidates")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
     @JsonIgnore
-    private final List<User> users = new ArrayList<>();
+    private User user;
 
-    public Candidate(){}
+    public Candidate() {
+    }
 
     public Candidate(Long id, String fullName, String email, String phone, String country,
                      String city, boolean relocation, Modality modality, String cv_url) {
@@ -109,11 +114,11 @@ public class Candidate implements Serializable {
         this.city = city;
     }
 
-    public boolean isRelocation() {
+    public Boolean getRelocation() {
         return relocation;
     }
 
-    public void setRelocation(boolean relocation) {
+    public void setRelocation(Boolean relocation) {
         this.relocation = relocation;
     }
 
@@ -133,16 +138,20 @@ public class Candidate implements Serializable {
         this.cv_url = cv_url;
     }
 
-    public List<Tag> getTags() {
+    public Set<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(List<Tag> tags) {
+    public void setTags(Set<Tag> tags) {
         this.tags = tags;
     }
 
-    public List<User> getUsers() {
-        return users;
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override
@@ -159,4 +168,5 @@ public class Candidate implements Serializable {
                 ", cv_url='" + cv_url + '\'' +
                 '}';
     }
+
 }

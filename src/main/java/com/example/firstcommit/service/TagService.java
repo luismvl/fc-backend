@@ -15,4 +15,8 @@ public interface TagService {
 
     boolean deleteById(Long id);
 
+    boolean existsById(Long id);
+
+    boolean existsByName(String name);
+
 }

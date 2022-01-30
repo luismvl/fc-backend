@@ -1,12 +1,11 @@
 package com.example.firstcommit.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "tags")
@@ -20,9 +19,10 @@ public class Tag implements Serializable {
 
     @ManyToMany(mappedBy = "tags")
     @JsonIgnore
-    private final List<Candidate> candidates = new ArrayList<>();
+    private final Set<Candidate> candidates = new HashSet<>();
 
-    public Tag(){}
+    public Tag() {
+    }
 
     public Tag(Long id, String name) {
         this.id = id;
@@ -45,7 +45,7 @@ public class Tag implements Serializable {
         this.name = name;
     }
 
-    public List<Candidate> getCandidates() {
+    public Set<Candidate> getCandidates() {
         return candidates;
     }
 
