@@ -1,5 +1,6 @@
 package com.example.firstcommit.controller;
 
+import com.cloudinary.utils.ObjectUtils;
 import com.example.firstcommit.dto.MessageDTO;
 import com.example.firstcommit.dto.TagsListDTO;
 import com.example.firstcommit.entities.Candidate;
@@ -8,6 +9,7 @@ import com.example.firstcommit.entities.User;
 import com.example.firstcommit.service.CandidateService;
 import com.example.firstcommit.service.TagService;
 import com.example.firstcommit.service.UserService;
+import com.example.firstcommit.service.impl.CloudinaryService;
 import com.example.firstcommit.utils.CandidateSpecificationsBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -15,10 +17,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.io.IOException;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,6 +35,9 @@ public class CandidateController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    CloudinaryService cloudinaryService;
 
     @GetMapping("/candidates")
     public List<Candidate> findAll(Authentication authentication) {
@@ -52,7 +57,7 @@ public class CandidateController {
     public List<Candidate> search(@RequestParam(value = "search") String search, Authentication authentication) {
         CandidateSpecificationsBuilder builder = new CandidateSpecificationsBuilder();
         Pattern pattern = Pattern.compile("(\\w+?)([:<>])(\\w+?&*\\w*),");
-        Matcher matcher = pattern.matcher(search + ",user:"+ authentication.getName()+",");
+        Matcher matcher = pattern.matcher(search + ",user:" + authentication.getName() + ",");
         while (matcher.find()) {
             builder.with(matcher.group(1), matcher.group(2), matcher.group(3));
         }
@@ -139,4 +144,60 @@ public class CandidateController {
         return ResponseEntity.ok(candidateService.removeTag(candidateId, tagId));
     }
 
+    @PostMapping("/candidates/{candidateId}/image")
+    public ResponseEntity<?> uploadImage(@PathVariable Long candidateId, @RequestBody MultipartFile image, Authentication authentication) {
+        Optional<Candidate> candidateOpt = candidateService.findById(candidateId);
+        if (candidateOpt.isEmpty() || !candidateOpt.get().getUser().getUsername().equals(authentication.getName())) {
+            return ResponseEntity.notFound().build();
+        }
+        System.out.println(image.getContentType());
+        if (image == null || image.isEmpty() || image.getContentType() == null || !image.getContentType().startsWith("image")) {
+            return ResponseEntity.badRequest().build();
+        }
+        Map<?, ?> result = null;
+        Candidate candidate = candidateOpt.get();
+        try {
+            String filename = candidateId + "-" + candidate.getName().toLowerCase().replaceAll("\\s", "") + "-image";
+            result = cloudinaryService.uploadImage(image, ObjectUtils.asMap(
+                    "folder", "fc-images",
+                    "public_id", filename,
+                    "filename_override", filename,
+                    "use_filename",  false,
+                    "overwrite", true
+            ));
+        } catch (IOException e) {
+            return ResponseEntity.badRequest().build();
+        }
+        candidate.setImage_url((String) result.get("url"));
+        return ResponseEntity.ok().body(candidateService.save(candidate));
+    }
+
+    @PostMapping("/candidates/{candidateId}/cv")
+    public ResponseEntity<?> uploadPdf(@PathVariable Long candidateId, @RequestBody MultipartFile pdf, Authentication authentication) {
+        Optional<Candidate> candidateOpt = candidateService.findById(candidateId);
+        if (candidateOpt.isEmpty() || !candidateOpt.get().getUser().getUsername().equals(authentication.getName())) {
+            return ResponseEntity.notFound().build();
+        }
+        if (pdf == null || pdf.isEmpty() || pdf.getContentType() == null || !pdf.getContentType().equals("application/pdf")) {
+            return ResponseEntity.badRequest().build();
+        }
+        Map<?, ?> result = null;
+        Candidate candidate = candidateOpt.get();
+        try {
+            String filename = candidateId + "-" + candidate.getName().toLowerCase().replaceAll("\\s", "") + "-cv";
+            result = cloudinaryService.uploadPdf(pdf, ObjectUtils.asMap(
+                    "folder", "fc-cvs",
+                    "resource_type", "pdf",
+                    "pages", true,
+                    "public_id", filename,
+                    "filename_override", filename,
+                    "use_filename",  false,
+                    "overwrite", true
+            ));
+        } catch (IOException e) {
+            return ResponseEntity.badRequest().build();
+        }
+        candidate.setCv_url((String) result.get("url"));
+        return ResponseEntity.ok().body(candidateService.save(candidate));
+    }
 }

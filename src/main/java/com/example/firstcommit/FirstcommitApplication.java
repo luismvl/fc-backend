@@ -24,10 +24,10 @@ public class FirstcommitApplication {
         UserService userService = context.getBean(UserService.class);
 
         Candidate candidate1 = new Candidate(null, "Luis Manuel Vela Linares", "luis@mail.com",
-                "+58 424 123 4567", "Venezuela", "Barinas", true, Modality.MIXED, "url");
+                "+58 424 123 4567", "Venezuela", "Barinas", true, Modality.MIXED);
         candidateService.save(candidate1);
         Candidate candidate2 = new Candidate(null, "Daniel Gonzalez", "daniel@mail.com",
-                "+58 424 558 1142", "Colombia", "Bogotá", true, Modality.REMOTE, "url");
+                "+58 424 558 1142", "Colombia", "Bogotá", true, Modality.REMOTE);
         candidateService.save(candidate2);
 
         Tag tag1 = new Tag(null, "React");

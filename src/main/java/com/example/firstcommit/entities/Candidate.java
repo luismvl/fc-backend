@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -36,6 +35,8 @@ public class Candidate implements Serializable {
 
     private String cv_url;
 
+    private String image_url;
+
     //    Relaciones
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -54,7 +55,7 @@ public class Candidate implements Serializable {
     }
 
     public Candidate(Long id, String fullName, String email, String phone, String country,
-                     String city, boolean relocation, Modality modality, String cv_url) {
+                     String city, Boolean relocation, Modality modality) {
         this.id = id;
         this.name = fullName;
         this.email = email;
@@ -63,7 +64,6 @@ public class Candidate implements Serializable {
         this.city = city;
         this.relocation = relocation;
         this.modality = modality;
-        this.cv_url = cv_url;
     }
 
     public Long getId() {
@@ -138,6 +138,14 @@ public class Candidate implements Serializable {
         this.cv_url = cv_url;
     }
 
+    public String getImage_url() {
+        return image_url;
+    }
+
+    public void setImage_url(String image_url) {
+        this.image_url = image_url;
+    }
+
     public Set<Tag> getTags() {
         return tags;
     }
@@ -164,8 +172,9 @@ public class Candidate implements Serializable {
                 ", country='" + country + '\'' +
                 ", city='" + city + '\'' +
                 ", relocation=" + relocation +
-                ", modality='" + modality + '\'' +
+                ", modality=" + modality +
                 ", cv_url='" + cv_url + '\'' +
+                ", image_url='" + image_url + '\'' +
                 '}';
     }
 

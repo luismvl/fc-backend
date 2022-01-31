@@ -37,13 +37,13 @@ public class JPASpecificationsTest {
         tagService.save(tag2);
 
         candidateLuis = new Candidate(null, "Luis Manuel Vela Linares", "luis@mail.com",
-                "+58 424 123 4567", "Venezuela", "Barinas", true, Modality.MIXED, "url");
+                "+58 424 123 4567", "Venezuela", "Barinas", true, Modality.MIXED);
         candidateLuis.getTags().add(tag1);
         candidateLuis.getTags().add(tag2);
         candidateRepository.save(candidateLuis);
 
         candidateDaniel = new Candidate(null, "Daniel Gonzalez", "daniel@mail.com",
-                "+58 424 558 1142", "Colombia", "Bogotá", true, Modality.REMOTE, "url");
+                "+58 424 558 1142", "Colombia", "Bogotá", true, Modality.REMOTE);
         candidateDaniel.getTags().add(tag1);
         candidateRepository.save(candidateDaniel);
     }
