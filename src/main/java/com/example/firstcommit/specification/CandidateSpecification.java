@@ -23,11 +23,11 @@ public class CandidateSpecification implements Specification<Candidate> {
     public Predicate toPredicate(Root<Candidate> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
         if (criteria.getOperation().equalsIgnoreCase(">")) {
             return builder.greaterThanOrEqualTo(
-                    root.<String> get(criteria.getKey()), criteria.getValue().toString());
+                    root.<String>get(criteria.getKey()), criteria.getValue().toString());
         }
         if (criteria.getOperation().equalsIgnoreCase("<")) {
             return builder.lessThanOrEqualTo(
-                    root.<String> get(criteria.getKey()), criteria.getValue().toString());
+                    root.<String>get(criteria.getKey()), criteria.getValue().toString());
         }
         if (criteria.getOperation().equalsIgnoreCase(":")) {
             if (root.get(criteria.getKey()).getJavaType() == String.class) {
@@ -39,10 +39,10 @@ public class CandidateSpecification implements Specification<Candidate> {
                 Expression<Set<Candidate>> tagCandidates = tag.get("candidates");
                 return builder.and(builder.equal(tag.get("name"), criteria.getValue().toString().toUpperCase()),
                         builder.isMember(root, tagCandidates));
-            } else if(criteria.getKey().equals("user")) {
+            } else if (criteria.getKey().equals("user")) {
                 Root<User> user = query.from(User.class);
                 Expression<Set<Candidate>> userCandidates = user.get("candidates");
-                return  builder.and(builder.equal(user.get("username"), criteria.getValue()),
+                return builder.and(builder.equal(user.get("username"), criteria.getValue()),
                         builder.isMember(root, userCandidates));
             } else {
                 return builder.equal(root.get(criteria.getKey()), criteria.getValue());

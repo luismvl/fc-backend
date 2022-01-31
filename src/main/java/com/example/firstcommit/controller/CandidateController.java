@@ -20,7 +20,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -162,7 +165,7 @@ public class CandidateController {
                     "folder", "fc-images",
                     "public_id", filename,
                     "filename_override", filename,
-                    "use_filename",  false,
+                    "use_filename", false,
                     "overwrite", true
             ));
         } catch (IOException e) {
@@ -191,7 +194,7 @@ public class CandidateController {
                     "pages", true,
                     "public_id", filename,
                     "filename_override", filename,
-                    "use_filename",  false,
+                    "use_filename", false,
                     "overwrite", true
             ));
         } catch (IOException e) {
