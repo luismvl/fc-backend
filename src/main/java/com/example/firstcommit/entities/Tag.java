@@ -24,6 +24,10 @@ public class Tag implements Serializable {
     public Tag() {
     }
 
+    public Tag(Long id) {
+        this.id = id;
+    }
+
     public Tag(Long id, String name) {
         this.id = id;
         this.name = name;
@@ -56,4 +60,5 @@ public class Tag implements Serializable {
                 ", name='" + name + '\'' +
                 '}';
     }
+
 }

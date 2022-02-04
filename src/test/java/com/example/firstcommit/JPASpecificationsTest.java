@@ -11,11 +11,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 @SpringBootTest
@@ -35,6 +32,8 @@ public class JPASpecificationsTest {
         tagService.save(tag1);
         Tag tag2 = new Tag(null, "HTML&CSS");
         tagService.save(tag2);
+        Tag tag3 = new Tag(null, "Java");
+        tagService.save(tag3);
 
         candidateLuis = new Candidate(null, "Luis Manuel Vela Linares", "luis@mail.com",
                 "+58 424 123 4567", "Venezuela", "Barinas", true, Modality.MIXED);
@@ -45,25 +44,24 @@ public class JPASpecificationsTest {
         candidateDaniel = new Candidate(null, "Daniel Gonzalez", "daniel@mail.com",
                 "+58 424 558 1142", "Colombia", "Bogotá", true, Modality.REMOTE);
         candidateDaniel.getTags().add(tag1);
+        candidateDaniel.getTags().add(tag3);
         candidateRepository.save(candidateDaniel);
     }
 
     @Test
     void searchByTags() {
-        CandidateSpecification spec3 =
-                new CandidateSpecification(new SearchCriteria("tags", ":", "reaCt"));
-        CandidateSpecification spec4 =
-                new CandidateSpecification(new SearchCriteria("tags", ":", "html&css"));
-
-        System.out.println(candidateLuis.getName());
+        CandidateSpecification spec =
+                new CandidateSpecification(new SearchCriteria("tags", ":", "[1,2]"));
+        System.out.println("Luis tags - " + candidateLuis.getName());
         candidateLuis.getTags().forEach(tag -> System.out.println("\t" + tag));
 
-        List<Candidate> result = candidateRepository.findAll(Specification.where(spec3).and(spec4));
+        List<Candidate> result = candidateRepository.findAll(spec);
+        System.out.println("After");
         for (Candidate c : result) {
             System.out.println(c.getName());
             c.getTags().forEach(tag -> System.out.println("\t" + tag));
         }
-        assertTrue(result.stream().anyMatch(candidate -> candidate.getId() == 1L));
+//        assertTrue(result.stream().count() == 1);
 
     }
 }

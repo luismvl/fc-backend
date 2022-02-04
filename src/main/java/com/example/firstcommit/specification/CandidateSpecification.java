@@ -7,7 +7,11 @@ import com.example.firstcommit.utils.SearchCriteria;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class CandidateSpecification implements Specification<Candidate> {
 
@@ -30,23 +34,40 @@ public class CandidateSpecification implements Specification<Candidate> {
                     root.<String>get(criteria.getKey()), criteria.getValue().toString());
         }
         if (criteria.getOperation().equalsIgnoreCase(":")) {
+//             Si el atributo es un String
             if (root.get(criteria.getKey()).getJavaType() == String.class) {
                 return builder.like(
                         root.<String>get(criteria.getKey()), "%" + criteria.getValue() + "%");
-            } else if (criteria.getKey().equals("tags")) {
+            }
+//            Si el atributo es 'tags'
+            if (criteria.getKey().equals("tags")) {
                 query.distinct(true);
-                Root<Tag> tag = query.from(Tag.class);
-                Expression<Set<Candidate>> tagCandidates = tag.get("candidates");
-                return builder.and(builder.equal(tag.get("name"), criteria.getValue().toString().toUpperCase()),
-                        builder.isMember(root, tagCandidates));
-            } else if (criteria.getKey().equals("user")) {
+                // Paso el string de la query a un Set de ids
+                Set<Long> ids = Arrays.stream(criteria.getValue().toString()
+                                .replace("[", "").replace("]", "").split(","))
+                        .map(Long::parseLong).collect(Collectors.toSet());
+
+//                Si lo hago de esta manera cuando filtro por las tags 1,2,3 me trae candidatos que pueden no tener alguna de estas tags
+//                Join<Candidate, Tag> join = root.join("tags");
+//                return builder.and(join.get("id").in(ids));
+
+                List<Predicate> predicates = new ArrayList<Predicate>();
+                for (Long id : ids) {
+                    Join<Candidate, Tag> join = root.join("tags");
+                    Predicate p = builder.equal(join.get("id"), id);
+                    predicates.add(p);
+                }
+                return builder.and(predicates.toArray(new Predicate[0]));
+            }
+//            Si el atributo es 'user'
+            if (criteria.getKey().equals("user")) {
                 Root<User> user = query.from(User.class);
                 Expression<Set<Candidate>> userCandidates = user.get("candidates");
                 return builder.and(builder.equal(user.get("username"), criteria.getValue()),
                         builder.isMember(root, userCandidates));
-            } else {
-                return builder.equal(root.get(criteria.getKey()), criteria.getValue());
             }
+            return builder.equal(root.get(criteria.getKey()), criteria.getValue());
+
         }
         return null;
     }

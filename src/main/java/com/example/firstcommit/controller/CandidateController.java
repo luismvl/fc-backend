@@ -59,7 +59,7 @@ public class CandidateController {
     @GetMapping("/candidates/search")
     public List<Candidate> search(@RequestParam(value = "search") String search, Authentication authentication) {
         CandidateSpecificationsBuilder builder = new CandidateSpecificationsBuilder();
-        Pattern pattern = Pattern.compile("(\\w+?)([:<>])(\\w+?&*\\w*),");
+        Pattern pattern = Pattern.compile("(\\w+?)([:<>])(\\w+?),");
         Matcher matcher = pattern.matcher(search + ",user:" + authentication.getName() + ",");
         while (matcher.find()) {
             builder.with(matcher.group(1), matcher.group(2), matcher.group(3));
