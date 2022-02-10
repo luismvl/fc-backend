@@ -40,8 +40,8 @@ public class JPASpecificationsTest {
 
         candidateLuis = new Candidate(null, "Luis Manuel Vela Linares", "luis@mail.com",
                 "+58 424 123 4567", "Venezuela", "Barinas", true, Modality.MIXED);
-        candidateLuis.getTags().add(tag1);
         candidateLuis.getTags().add(tag2);
+        candidateLuis.getTags().add(tag1);
         candidateRepository.save(candidateLuis);
 
         candidateDaniel = new Candidate(null, "Daniel Gonzalez", "daniel@mail.com",
@@ -54,7 +54,7 @@ public class JPASpecificationsTest {
     @Test
     void searchByTags() {
         CandidateSpecification spec =
-                new CandidateSpecification(new SearchCriteria("relocation", ":", "true"));
+                new CandidateSpecification(new SearchCriteria("tags", ":", "[1,3]"));
         System.out.println("Luis tags - " + candidateLuis.getName());
         candidateLuis.getTags().forEach(tag -> System.out.println("\t" + tag));
 
