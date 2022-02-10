@@ -14,6 +14,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 @SpringBootTest
 public class JPASpecificationsTest {
@@ -51,7 +54,7 @@ public class JPASpecificationsTest {
     @Test
     void searchByTags() {
         CandidateSpecification spec =
-                new CandidateSpecification(new SearchCriteria("modality", ":", "MIXED"));
+                new CandidateSpecification(new SearchCriteria("country", ":", "VEnEzuela"));
         System.out.println("Luis tags - " + candidateLuis.getName());
         candidateLuis.getTags().forEach(tag -> System.out.println("\t" + tag));
 
@@ -61,7 +64,7 @@ public class JPASpecificationsTest {
             System.out.println(c.getName());
             c.getTags().forEach(tag -> System.out.println("\t" + tag));
         }
-//        assertTrue(result.stream().count() == 1);
+        assertEquals(1L, (long) result.get(0).getId());
 
     }
 }

@@ -8,10 +8,7 @@ import com.example.firstcommit.utils.SearchCriteria;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CandidateSpecification implements Specification<Candidate> {
@@ -41,8 +38,7 @@ public class CandidateSpecification implements Specification<Candidate> {
             }
 //             Si el atributo es un String
             if (root.get(criteria.getKey()).getJavaType() == String.class) {
-                return builder.like(
-                        root.<String>get(criteria.getKey()), "%" + criteria.getValue() + "%");
+                return builder.like(builder.lower(root.<String>get(criteria.getKey())), "%" + criteria.getValue().toString().toLowerCase() + "%");
             }
 //            Si el atributo es 'tags'
             if (criteria.getKey().equals("tags")) {
