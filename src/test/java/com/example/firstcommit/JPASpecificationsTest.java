@@ -54,7 +54,7 @@ public class JPASpecificationsTest {
     @Test
     void searchByTags() {
         CandidateSpecification spec =
-                new CandidateSpecification(new SearchCriteria("country", ":", "VEnEzuela"));
+                new CandidateSpecification(new SearchCriteria("relocation", ":", "true"));
         System.out.println("Luis tags - " + candidateLuis.getName());
         candidateLuis.getTags().forEach(tag -> System.out.println("\t" + tag));
 

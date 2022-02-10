@@ -67,6 +67,10 @@ public class CandidateSpecification implements Specification<Candidate> {
                 return builder.and(builder.equal(user.get("username"), criteria.getValue()),
                         builder.isMember(root, userCandidates));
             }
+            if(root.get(criteria.getKey()).getJavaType() == Boolean.class) {
+                return builder.equal(root.get(criteria.getKey()), Boolean.valueOf((String) criteria.getValue()));
+
+            }
             return builder.equal(root.get(criteria.getKey()), criteria.getValue());
 
         }
