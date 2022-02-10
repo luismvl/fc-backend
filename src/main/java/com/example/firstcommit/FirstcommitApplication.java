@@ -55,7 +55,7 @@ public class FirstcommitApplication {
         Candidate candidate1DB = candidateService.findById(1L).get();
         Candidate candidate2DB = candidateService.findById(2L).get();
         candidate1DB.setUser(new User(1L));
-        candidate2DB.setUser(new User(2L));
+        candidate2DB.setUser(new User(1L));
         candidateService.save(candidate1DB);
         candidateService.save(candidate2DB);
 
