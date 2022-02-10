@@ -203,4 +203,19 @@ public class CandidateController {
         candidate.setCv_url((String) result.get("url"));
         return ResponseEntity.ok().body(candidateService.save(candidate));
     }
+
+    @DeleteMapping("/candidates/{candidateId}/cv")
+    public ResponseEntity<Void> deleteCv(@PathVariable Long candidateId, @RequestBody MultipartFile pdf, Authentication authentication) {
+        if (candidateId == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        Optional<Candidate> candidateOpt = candidateService.findById(candidateId);
+        if (candidateOpt.isEmpty() || !candidateOpt.get().getUser().getUsername().equals(authentication.getName())) {
+            return ResponseEntity.notFound().build();
+        }
+        Candidate newCandidate = candidateOpt.get();
+        newCandidate.setCv_url(null);
+        candidateService.save(newCandidate);
+        return ResponseEntity.noContent().build();
+    }
 }
