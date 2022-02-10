@@ -53,14 +53,14 @@ public class FirstcommitApplication {
         User user1 = new User(null, "username1", "user1@mail.com", passwordEncoder.encode("password1"));
         userService.save(user1);
         Candidate candidate1DB = candidateService.findById(1L).get();
+        Candidate candidate2DB = candidateService.findById(2L).get();
         candidate1DB.setUser(new User(1L));
+        candidate2DB.setUser(new User(2L));
         candidateService.save(candidate1DB);
+        candidateService.save(candidate2DB);
 
         User user2 = new User(null, "username2", "user2@mail.com", passwordEncoder.encode("password2"));
         userService.save(user2);
-        Candidate candidate2DB = candidateService.findById(2L).get();
-        candidate2DB.setUser(new User(2L));
-        candidateService.save(candidate2DB);
 
     }
 
