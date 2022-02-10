@@ -98,8 +98,10 @@ public class AuthController {
     }
 
     @GetMapping("/auth/check")
-    public ResponseEntity<Void> checkToken() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<JwtResponse> checkToken(Authentication authentication) {
+        String jwt = jwtTokenUtil.generateJwtToken(authentication);
+        User userDB = userRepository.findByUsername(authentication.getName()).get();
+        return ResponseEntity.ok(new JwtResponse(jwt, userDB));
     }
 
     private static boolean isEmail(String email) {
