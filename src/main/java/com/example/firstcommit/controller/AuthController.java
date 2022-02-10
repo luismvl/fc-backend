@@ -20,6 +20,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Controlador para llevar a cabo la autenticación utilizando JWT
  * <p>
@@ -48,6 +52,12 @@ public class AuthController {
 
     @PostMapping("/auth/login")
     public ResponseEntity<JwtResponse> login(@RequestBody LoginRequest loginRequest) {
+
+        if (isEmail(loginRequest.getUsername())) {
+            String email = loginRequest.getUsername();
+            Optional<User>  userOptional = userRepository.findByEmail(email);
+            userOptional.ifPresent(user -> loginRequest.setUsername(user.getUsername()));
+        }
 
         Authentication authentication = authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -90,6 +100,12 @@ public class AuthController {
     @GetMapping("/auth/check")
     public ResponseEntity<Void> checkToken() {
         return ResponseEntity.ok().build();
+    }
+
+    private static boolean isEmail(String email) {
+        Pattern pattern = Pattern.compile("[\\w\\d.%+-]+@\\b[\\w\\d.-]+.[\\w]{2,4}");
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
     }
 
 }
