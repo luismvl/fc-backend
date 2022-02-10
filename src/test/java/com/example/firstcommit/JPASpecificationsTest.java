@@ -51,7 +51,7 @@ public class JPASpecificationsTest {
     @Test
     void searchByTags() {
         CandidateSpecification spec =
-                new CandidateSpecification(new SearchCriteria("tags", ":", "[1,2]"));
+                new CandidateSpecification(new SearchCriteria("modality", ":", "MIXED"));
         System.out.println("Luis tags - " + candidateLuis.getName());
         candidateLuis.getTags().forEach(tag -> System.out.println("\t" + tag));
 

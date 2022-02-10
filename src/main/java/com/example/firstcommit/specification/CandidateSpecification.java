@@ -3,6 +3,7 @@ package com.example.firstcommit.specification;
 import com.example.firstcommit.entities.Candidate;
 import com.example.firstcommit.entities.Tag;
 import com.example.firstcommit.entities.User;
+import com.example.firstcommit.utils.Modality;
 import com.example.firstcommit.utils.SearchCriteria;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -34,6 +35,10 @@ public class CandidateSpecification implements Specification<Candidate> {
                     root.<String>get(criteria.getKey()), criteria.getValue().toString());
         }
         if (criteria.getOperation().equalsIgnoreCase(":")) {
+//            Si el atributo es un enum
+            if (root.get(criteria.getKey()).getJavaType() == Modality.class) {
+                return builder.equal(root.<String>get(criteria.getKey()), Modality.valueOf((String) criteria.getValue()));
+            }
 //             Si el atributo es un String
             if (root.get(criteria.getKey()).getJavaType() == String.class) {
                 return builder.like(
