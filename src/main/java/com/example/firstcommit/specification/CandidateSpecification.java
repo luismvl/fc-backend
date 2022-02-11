@@ -20,7 +20,6 @@ public class CandidateSpecification implements Specification<Candidate> {
         this.criteria = criteria;
     }
 
-
     @Override
     public Predicate toPredicate(Root<Candidate> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
         if (criteria.getOperation().equalsIgnoreCase(">")) {

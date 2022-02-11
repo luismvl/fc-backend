@@ -55,7 +55,7 @@ public class CandidateController {
         }
         return ResponseEntity.ok(candidateOptional.get());
     }
-
+    // tags:[1,2]&modality:REMOTE
     @GetMapping("/candidates/search")
     public List<Candidate> search(@RequestParam(value = "search") String search, Authentication authentication) {
         CandidateSpecificationsBuilder builder = new CandidateSpecificationsBuilder();
@@ -202,7 +202,7 @@ public class CandidateController {
         } catch (IOException e) {
             return ResponseEntity.badRequest().build();
         }
-        candidate.setCv_url((String) result.get("url"));
+        candidate.setCv_url((String) result.get("secure_url"));
         return ResponseEntity.ok().body(candidateService.save(candidate));
     }
 
