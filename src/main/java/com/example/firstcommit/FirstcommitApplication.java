@@ -12,6 +12,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Arrays;
+
 @SpringBootApplication
 public class FirstcommitApplication {
 
@@ -50,7 +52,7 @@ public class FirstcommitApplication {
 
         PasswordEncoder passwordEncoder = context.getBean(PasswordEncoder.class);
 
-        User user1 = new User(null, "username1", "user1@mail.com", passwordEncoder.encode("password1"));
+        User user1 = new User(null, "demo", "demo@mail.com", passwordEncoder.encode("demo"));
         userService.save(user1);
         Candidate candidate1DB = candidateService.findById(1L).get();
         Candidate candidate2DB = candidateService.findById(2L).get();
@@ -62,6 +64,8 @@ public class FirstcommitApplication {
         User user2 = new User(null, "username2", "user2@mail.com", passwordEncoder.encode("password2"));
         userService.save(user2);
 
+        String[] tags = {"Angular", "Hibernate", "PHP", "TypeScript", "Symfony", ".NET", "Docker", "C#", "SQL", "React Native", "Lavarel"};
+        Arrays.stream(tags).map(s -> new Tag(null, s)).forEach(tagService::save);
     }
 
 }
