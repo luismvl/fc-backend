@@ -54,12 +54,12 @@ public class JPASpecificationsTest {
     @Test
     void searchByTags() {
         CandidateSpecification spec =
-                new CandidateSpecification(new SearchCriteria("tags", ":", "[1,3]"));
+                new CandidateSpecification(new SearchCriteria("tags", ":", "[1,2]"));
         System.out.println("Luis tags - " + candidateLuis.getName());
         candidateLuis.getTags().forEach(tag -> System.out.println("\t" + tag));
 
         List<Candidate> result = candidateRepository.findAll(spec);
-        System.out.println("After");
+        System.out.println("Result");
         for (Candidate c : result) {
             System.out.println(c.getName());
             c.getTags().forEach(tag -> System.out.println("\t" + tag));

@@ -55,11 +55,11 @@ public class CandidateController {
         }
         return ResponseEntity.ok(candidateOptional.get());
     }
-    // tags:[1,2]&modality:REMOTE
+    // tags:[1,2],modality:REMOTE
     @GetMapping("/candidates/search")
-    public List<Candidate> search(@RequestParam(value = "search") String search, Authentication authentication) {
+    public List<Candidate> search(@RequestParam(value = "filter") String search, Authentication authentication) {
         CandidateSpecificationsBuilder builder = new CandidateSpecificationsBuilder();
-        Pattern pattern = Pattern.compile("(\\w+?)([:<>])([\\w\\[\\],]+),");
+        Pattern pattern = Pattern.compile("(\\w+?)([:<>])(\\w+|\\[(\\d|,)+\\]),");
         Matcher matcher = pattern.matcher(search + ",user:" + authentication.getName() + ",");
 
         while (matcher.find()) {
