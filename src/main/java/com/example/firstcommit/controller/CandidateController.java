@@ -162,18 +162,18 @@ public class CandidateController {
         Map<?, ?> result = null;
         Candidate candidate = candidateOpt.get();
         try {
-            String filename = candidateId + "-" + candidate.getName().toLowerCase().replaceAll("\\s", "") + "-image";
+            String folder = "fc-" + candidate.getId();
             result = cloudinaryService.uploadImage(image, ObjectUtils.asMap(
-                    "folder", "fc-images",
-                    "public_id", filename,
-                    "filename_override", filename,
+                    "folder", folder,
+                    "public_id", "image",
+                    "filename_override", "image",
                     "use_filename", false,
                     "overwrite", true
             ));
         } catch (IOException e) {
             return ResponseEntity.badRequest().build();
         }
-        candidate.setImage_url((String) result.get("url"));
+        candidate.setImage_url((String) result.get("secure_url"));
         return ResponseEntity.ok().body(candidateService.save(candidate));
     }
 
@@ -189,13 +189,13 @@ public class CandidateController {
         Map<?, ?> result = null;
         Candidate candidate = candidateOpt.get();
         try {
-            String filename = candidateId + "-" + candidate.getName().toLowerCase().replaceAll("\\s", "") + "-cv";
+            String folder = "fc-" + candidate.getId();
             result = cloudinaryService.uploadPdf(pdf, ObjectUtils.asMap(
-                    "folder", "fc-cvs",
+                    "folder", folder,
                     "resource_type", "pdf",
                     "pages", true,
-                    "public_id", filename,
-                    "filename_override", filename,
+                    "public_id", "cv",
+                    "filename_override", "cv",
                     "use_filename", false,
                     "overwrite", true
             ));

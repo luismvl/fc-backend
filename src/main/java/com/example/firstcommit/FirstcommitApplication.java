@@ -28,8 +28,8 @@ public class FirstcommitApplication {
         Candidate candidate1 = new Candidate(null, "Luis Manuel Vela Linares", "luis@mail.com",
                 "+58 424 123 4567", "Venezuela", "Barinas", true, Modality.REMOTE);
         candidateService.save(candidate1);
-        Candidate candidate2 = new Candidate(null, "Daniel Gonzalez", "daniel@mail.com",
-                "+58 424 558 1142", "Colombia", "Bogotá", true, Modality.REMOTE);
+        Candidate candidate2 = new Candidate(null, "Ana Gutierrez Lozano", "anag@mail.com",
+                "+58 424 558 1142", "Venezuela", "Caracas", true, Modality.REMOTE);
         candidateService.save(candidate2);
 
         Tag tag1 = new Tag(null, "React");
@@ -64,7 +64,8 @@ public class FirstcommitApplication {
         User user2 = new User(null, "username2", "user2@mail.com", passwordEncoder.encode("password2"));
         userService.save(user2);
 
-        String[] tags = {"Angular", "Hibernate", "PHP", "TypeScript", "Symfony", ".NET", "Docker", "C#", "SQL", "React Native", "Lavarel"};
+        String[] tags = {"Angular", "Hibernate", "PHP", "TypeScript", "Symfony", ".NET", "Docker", "C#", "SQL",
+                "React Native", "Lavarel", "Python"};
         Arrays.stream(tags).map(s -> new Tag(null, s)).forEach(tagService::save);
     }
 
